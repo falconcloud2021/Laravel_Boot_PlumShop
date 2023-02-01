@@ -2,27 +2,21 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+//--------------------------------------------------------------------------
+// Shop Routes group
+Route::get('/', [App\Http\Controllers\Shop\HomeController::class, 'indexPage'])->name('index');
+Route::get('/blog', [App\Http\Controllers\Shop\HomeController::class, 'blog'])->name('blog');
 
-Route::get('/welcome', function () {
-    return view('welcome');
-});
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
+//--------------------------------------------------------------------------
+// Admin Panel Routes
+Route::get('/credential', function () {return view('credPage');});
+Route::middleware(['auth:sanctum',config('jetstream.auth_session'),'verified'
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // Route::get('/dashboard', function () {return view('dashboard');})->name('dashboard');
+    Route::get('/main-board', [\App\Http\Controllers\Admin\MainController::class, 'mainBoard'])->name('main_board');
+    
+    Route::resource('products', App\Http\Controllers\Admin\ProductController::class)->withTrashed();
+    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class)->withTrashed();
+    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class)->withTrashed();
+    
 });
